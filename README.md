@@ -2,7 +2,7 @@
 Compute Fundamental Matrix and Epipolar lines using Epipolar Geometry. Just a script for a quick check of your line equation.
 
 1. Note the **coordination system**. 
-Convert all your point coordinates into **(b)** as shown in the following image before using the script:
+Convert all your point coordinates into **(b)** as shown in the following image before using the script. The origin is at the center of the image.
 
 ![Image of coordinate system](https://github.com/QinZihao00/Fundamental-Matrix-and-Epipolar-Line/blob/master/Coordinate%20System.jpg)
 
