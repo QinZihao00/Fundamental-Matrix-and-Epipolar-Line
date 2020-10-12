@@ -3,6 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def convert_coordiante(points, img_size):
+    """
+    :param points:  List of tuples [(x1, y1), ...]
+    :param img_size:      tuple (x, y)
+    :return: List of tuples [(u1, v1), ...]
+    """
+    x_half, y_half = img_size[0]//2, img_size[1]//2
+    result = [(x-x_half, y_half-y) for x, y in points]
+    return result
+
+
 def get_FundamentalMatrix(left_points, right_points):
     """
     params: left_points:  List of tuples [(u1, v1), ...]
