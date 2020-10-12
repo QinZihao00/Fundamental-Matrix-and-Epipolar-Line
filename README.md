@@ -6,6 +6,10 @@ Convert all your point coordinates into **(b)** as shown in the following image 
 
 ![Image of coordinate system](https://github.com/QinZihao00/Fundamental-Matrix-and-Epipolar-Line/blob/master/Coordinate%20System.jpg)
 
+The following function could help
+```python
+convert_coordiante(points, img_size)
+```
 
 2. Make sure you have `python, numpy and matplotlib` installed. 
 
