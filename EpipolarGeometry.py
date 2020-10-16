@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def convert_coordiante(points, img_size):
+def convert_coordinate(points, img_size):
     """
     :param points:  List of tuples [(x1, y1), ...]
     :param img_size:      tuple (x, y)
@@ -28,8 +28,8 @@ def get_FundamentalMatrix(left_points, right_points):
         u_, v_ = right_points[idx]
         eqn_param = [u * u_, u * v_, u, v * u_, v * v_, v, u_, v_]
         A.append(eqn_param)
-    A = np.array(A)
-    B = np.array([-1]*8)
+    A = np.array(A).astype(np.float64)
+    B = np.array([-1]*8).astype(np.float64)
     F = np.append(np.linalg.solve(A, B), 1.).reshape(3, 3)
     return F
 
@@ -54,23 +54,22 @@ def get_epipolar_param(F, point, point_image=None):
 
 def plot_epipolar_line(w, b, image_path, save_path):
     """
-    params: w: Float
-    params: b: Float
+    params: w: Float / list of float
+    params: b: Float / list of float
     params: image_path: Str
     params: save_path: Str
     return: None
     Show image with epipolar line and save new image.
     """
     img = plt.imread(image_path)
-    
-    x = np.linspace(-img.shape[1]/2, img.shape[1]/2)
-    line_eqn = w * x + b
-    plt.figure(figsize=(img.shape[1]/100., img.shape[0]/100.))
-    
-    plt.imshow(img, extent=[-img.shape[1]/2., img.shape[1]/2., -img.shape[0]/2., img.shape[0]/2.])
-    plt.plot(x, line_eqn, linewidth=8)
-    plt.axis('off')
-    plt.savefig(save_path, dpi=100)
+    fig, ax = plt.subplots(figsize=(img.shape[1]/100., img.shape[0]/100.))
+    ax.imshow(img, extent=[-img.shape[1]/2., img.shape[1]/2., -img.shape[0]/2., img.shape[0]/2.])
+    for _, (cur_w, cur_b) in enumerate(zip(w, b)):
+        x = np.linspace(-img.shape[1]/2, img.shape[1]/2)
+        line_eqn = cur_w * x + cur_b
+        ax.plot(x, line_eqn, linewidth=8)
+    ax.axis('off')
+    fig.savefig(save_path, dpi=100)
     plt.show()
 
 
