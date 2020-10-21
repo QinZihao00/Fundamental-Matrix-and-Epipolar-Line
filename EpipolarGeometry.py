@@ -1,16 +1,16 @@
 # QinZihao From NTU, Singapore
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-def convert_coordiante(points, img_size):
+def convert_coordinate(points, img_size):
     """
     :param points:  List of tuples [(x1, y1), ...]
     :param img_size:      tuple (x, y)
     :return: List of tuples [(u1, v1), ...]
     """
-    x_half, y_half = img_size[0]//2, img_size[1]//2
-    result = [(x-x_half, y_half-y) for x, y in points]
+    x_half, y_half = img_size[0] // 2, img_size[1] // 2
+    result = [(x - x_half, y_half - y) for x, y in points]
     return result
 
 
@@ -28,8 +28,8 @@ def get_FundamentalMatrix(left_points, right_points):
         u_, v_ = right_points[idx]
         eqn_param = [u * u_, u * v_, u, v * u_, v * v_, v, u_, v_]
         A.append(eqn_param)
-    A = np.array(A)
-    B = np.array([-1]*8)
+    A = np.array(A).astype(np.float64)
+    B = np.array([-1] * 8).astype(np.float64)
     F = np.append(np.linalg.solve(A, B), 1.).reshape(3, 3)
     return F
 
@@ -42,35 +42,36 @@ def get_epipolar_param(F, point, point_image=None):
     return: w, b:        Floating - Epipolar line equation y = w * x + b parameters
     Compute the epipolar line equation on the corresponding image.
     """
-    point = np.append(np.array(point), 1.0)    # (u, v, 1)
-    
-    if point_image == 'left':    # Input left point -> find epipolar line in right image
-        a,b,c = np.matmul(point, F)
-        return -a/b, -c/b
-    if point_image == 'right':   # Input right point -> find epipolar line in left image
-        a,b,c = np.matmul(point, np.transpose(F))
-        return -a/b, -c/b
+    point = np.append(np.array(point), 1.0)  # (u, v, 1)
+
+    if point_image == 'left':  # Input left point -> find epipolar line in right image
+        a, b, c = np.matmul(point, F)
+        return -a / b, -c / b
+    if point_image == 'right':  # Input right point -> find epipolar line in left image
+        a, b, c = np.matmul(point, np.transpose(F))
+        return -a / b, -c / b
 
 
-def plot_epipolar_line(w, b, image_path, save_path):
+def plot_epipolar_line(w, b, img, save_path):
     """
-    params: w: Float
-    params: b: Float
-    params: image_path: Str
+    params: w: Float / list of float
+    params: b: Float / list of float
+    params: img: Str of path or np.ndarray
     params: save_path: Str
     return: None
     Show image with epipolar line and save new image.
     """
-    img = plt.imread(image_path)
-    
-    x = np.linspace(-img.shape[1]/2, img.shape[1]/2)
-    line_eqn = w * x + b
-    plt.figure(figsize=(img.shape[1]/100., img.shape[0]/100.))
-    
-    plt.imshow(img, extent=[-img.shape[1]/2., img.shape[1]/2., -img.shape[0]/2., img.shape[0]/2.])
-    plt.plot(x, line_eqn, linewidth=8)
-    plt.axis('off')
-    plt.savefig(save_path, dpi=100)
+    if not isinstance(img, np.ndarray):
+        img = plt.imread(img)
+    figsize = (img.shape[1] / 100., img.shape[0] / 100.)
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(img, extent=[-img.shape[1] / 2., img.shape[1] / 2., -img.shape[0] / 2., img.shape[0] / 2.])
+    for _, (cur_w, cur_b) in enumerate(zip(w, b)):
+        x = np.linspace(-img.shape[1] / 2, img.shape[1] / 2)
+        line_eqn = cur_w * x + cur_b
+        ax.plot(x, line_eqn, linewidth=8)
+    ax.axis('off')
+    fig.savefig(save_path, dpi=100)
     plt.show()
 
 
@@ -81,4 +82,3 @@ if __name__ == "__main__":
     w, b = get_epipolar_param(...)
     # Plot epipolar line on the corresponding image and save as figure
     plot_epipolar_line(...)
-

@@ -1,0 +1,12 @@
+# Created by .ignore support plugin (hsz.mobi)
+*.xml
+.idea/.gitignore
+.idea/A2.iml
+.idea/deployment.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.ipynb_checkpoints/
+__pycache__/
+*.jpg
